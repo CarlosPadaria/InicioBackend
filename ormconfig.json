@@ -1,0 +1,14 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "username": "root",
+    "password": "senai",
+    "database": "DBUSUARIO",
+    "entities": [
+        "src/entity/*.js"
+    ],
+    "cli": {
+        "entitiesDir": "src/entity"
+    }
+}
