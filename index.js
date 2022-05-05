@@ -38,39 +38,26 @@ app.get("/produtos", async (req, res) =>{
 
 })
 
-app.put("/produtos", async (req, res) =>{
-    const{IDPRODUTO, QUANTIDADE, NOME} = req.body
+app.put("/produtos/:IDPRODUTO", async (req, res) =>{
+    const{QUANTIDADE, NOME} = req.body
     
     let productRepository = getRepository("Produto")
 
-    let produto = await productRepository.findOne({
-        where: [
-            {IDPRODUTO: req.body.IDPRODUTO}
-        ]
-    })
 
-    if (produto === null)
-    {
-        return res.status(400).json({message:"PRODUTO não encontrado!"})
-    }
-    else
-    {
         alterarDADOS = await productRepository.update(
-            req.body.IDPRODUTO, {NOME: `${req.body.NOME}`, QUANTIDADE: `${req.body.QUANTIDADE}`}
+            req.params, {NOME: `${req.body.NOME}`, QUANTIDADE: `${req.body.QUANTIDADE}`}
         )
-        produto.NOME = req.body.NOME
-        produto.QUANTIDADE = req.body.QUANTIDADE
-        return res.status(200).json({produto})
-    }
+       
+        return res.status(200).json(req.body)
+    
 })
 
-app.delete("/produtos", async(req, res) => {
+app.delete("/produtos/:IDPRODUTO", async(req, res) => {
 
-    const{IDPRODUTO} = req.body
     let productRepository = getRepository("Produto")
 
     let DeletarProduto = await productRepository.delete({
-       IDPRODUTO: `${IDPRODUTO}`
+       IDPRODUTO: `${req.params}`
     })
 
     if(DeletarProduto === null)
@@ -84,31 +71,18 @@ app.delete("/produtos", async(req, res) => {
 })
 
 app.post("/produtos", async(req, res) => {
-    const{IDPRODUTO, QUANTIDADE, NOME} = req.body
+    const{QUANTIDADE, NOME} = req.body
     //console.log(req.body)
     
     //return res.json({EMAIL, SENHA, NOME});
     let productRepository = getRepository("Produto")
-
-    let VerificarProdutoJaCadastrado = await productRepository.findOne({
-        where: [
-            {IDPRODUTO: `${IDPRODUTO}`}
-        ]
-    })
-    console.log(VerificarProdutoJaCadastrado);
-
-    if(VerificarProdutoJaCadastrado === null)
-    {
-        const produto = await productRepository.insert(
-            req.body
-        );
-
-        return res.status(200).json({produto})
-    }
-    else
-    {
-        return res.status(400).json({message:"Conta ja cadastrada"});
-    }
+    console.log(req.body)
+    const produto = await productRepository.insert(
+        req.body
+    );
+    console.log(req.body)
+    return res.status(200).json(req.body)
+    
    // console.log(VerificarContaJaCadastrada)
     
     
