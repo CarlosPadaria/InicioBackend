@@ -8,12 +8,13 @@ const { getRepository, Repository } = require('typeorm');
 
 */
 const database = require("./src/database");
-const User = require('./src/entity/User');
+const Produto = require('./src/entity/Produto');
 database()
 
 let app = express();
 
 app.use(express.json())
+
 app.get("/", (req, res) =>{
     //req.body
     if(true)
@@ -26,38 +27,83 @@ app.get("/", (req, res) =>{
     }
    
 })
-app.get("/users", async (req, res) =>{
+app.get("/produtos", async (req, res) =>{
     //req.body
-    let userRepository = getRepository("User");
+    let productRepository = getRepository("Produto");
     
 
-    const usuarios = await userRepository.find();
+    const produto = await productRepository.find();
 
-    return res.status(200).json({usuarios})
+    return res.status(200).json({produto})
 
 })
 
-app.post("/users", async(req, res) => {
-    const{EMAIL, SENHA, NOME, IDUSUARIO} = req.body
+app.put("/produtos", async (req, res) =>{
+    const{IDPRODUTO, QUANTIDADE, NOME} = req.body
+    
+    let productRepository = getRepository("Produto")
+
+    let produto = await productRepository.findOne({
+        where: [
+            {IDPRODUTO: req.body.IDPRODUTO}
+        ]
+    })
+
+    if (produto === null)
+    {
+        return res.status(400).json({message:"PRODUTO não encontrado!"})
+    }
+    else
+    {
+        alterarDADOS = await productRepository.update(
+            req.body.IDPRODUTO, {NOME: `${req.body.NOME}`, QUANTIDADE: `${req.body.QUANTIDADE}`}
+        )
+        produto.NOME = req.body.NOME
+        produto.QUANTIDADE = req.body.QUANTIDADE
+        return res.status(200).json({produto})
+    }
+})
+
+app.delete("/produtos", async(req, res) => {
+
+    const{IDPRODUTO} = req.body
+    let productRepository = getRepository("Produto")
+
+    let DeletarProduto = await productRepository.delete({
+       IDPRODUTO: `${IDPRODUTO}`
+    })
+
+    if(DeletarProduto === null)
+    {
+        return res.status(400).json({message:"Produto não encontrado"});
+    }
+    else
+    {
+        return res.status(200).json(req.body);
+    }
+})
+
+app.post("/produtos", async(req, res) => {
+    const{IDPRODUTO, QUANTIDADE, NOME} = req.body
     //console.log(req.body)
     
     //return res.json({EMAIL, SENHA, NOME});
-    let userRepository = getRepository("User")
+    let productRepository = getRepository("Produto")
 
-    let VerificarContaJaCadastrada = await userRepository.findOne({
+    let VerificarProdutoJaCadastrado = await productRepository.findOne({
         where: [
-            {IDUSUARIO: `${IDUSUARIO}`}
+            {IDPRODUTO: `${IDPRODUTO}`}
         ]
     })
-    console.log(VerificarContaJaCadastrada);
+    console.log(VerificarProdutoJaCadastrado);
 
-    if(VerificarContaJaCadastrada === null)
+    if(VerificarProdutoJaCadastrado === null)
     {
-        const usuario = await userRepository.insert(
+        const produto = await productRepository.insert(
             req.body
         );
 
-        return res.status(200).json({usuario})
+        return res.status(200).json({produto})
     }
     else
     {
@@ -68,39 +114,39 @@ app.post("/users", async(req, res) => {
     
 })
 
-app.get("/users/:IDUSUARIO", async (req, res) =>{
+app.get("/produtos/:IDPRODUTO", async (req, res) =>{
     console.log(req.params);
     
-    let userRepository = getRepository("User")
+    let productRepository = getRepository("Produto")
 
-    let usuario = await userRepository.findOne({
+    let produto = await productRepository.findOne({
         where: [
-            {IDUSUARIO: req.params.IDUSUARIO}
+            {IDPRODUTO: req.params.IDPRODUTO}
         ]
     })
    
-    if (usuario === null)
+    if (produto === null)
     {
-        return res.status(400).json({message:"Usuário não encontrado!"})
+        return res.status(400).json({message:"Produto não encontrado!"})
     }
     else
     {
-        return res.status(200).json({usuario})
+        return res.status(200).json({produto})
     }
 })
 
-app.patch("/users/:IDUSUARIO", async (req, res) =>{
+/*app.patch("/users/:IDPRODUTO", async (req, res) =>{
     console.log(req.params);
     
     let userRepository = getRepository("User")
 
-    let usuario = await userRepository.findOne({
+    let produto = await userRepository.findOne({
         where: [
-            {IDUSUARIO: req.params.IDUSUARIO}
+            {IDPRODUTO: req.params.IDUSUARIO}
         ]
     })
-    let alterarSenha
-    if (usuario === null)
+
+    if (produto === null)
     {
         return res.status(400).json({message:"Usuário não encontrado!"})
     }
@@ -112,7 +158,7 @@ app.patch("/users/:IDUSUARIO", async (req, res) =>{
         usuario.SENHA = req.body.SENHA
         return res.status(200).json({usuario})
     }
-})
+})*/
 
 app.listen(3333, () => {
     console.log("mensagem fofa >-<")
