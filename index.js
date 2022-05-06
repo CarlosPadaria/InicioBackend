@@ -38,6 +38,17 @@ app.get("/produtos", async (req, res) =>{
 
 })
 
+app.get("/provas", async (req, res) =>{
+    //req.body
+    let provasRepository = getRepository("Prova");
+    
+
+    const prova = await provasRepository.find();
+
+    return res.status(200).json({prova})
+
+})
+
 app.put("/produtos/:IDPRODUTO", async (req, res) =>{
     const{QUANTIDADE, NOME} = req.body
     
@@ -54,13 +65,19 @@ app.put("/produtos/:IDPRODUTO", async (req, res) =>{
 
 app.delete("/produtos/:IDPRODUTO", async(req, res) => {
 
+
     let productRepository = getRepository("Produto")
 
+    req.body =  await productRepository.findOne({
+        where: [
+            {IDPRODUTO: req.params.IDPRODUTO}
+        ]
+    })
     let DeletarProduto = await productRepository.delete({
-       IDPRODUTO: `${req.params}`
+       IDPRODUTO: `${req.params.IDPRODUTO}`
     })
 
-    if(DeletarProduto === null)
+    if(req.body === null)
     {
         return res.status(400).json({message:"Produto não encontrado"});
     }

@@ -1,4 +1,4 @@
-const { EntitySchema } = require("typeorm")
+const { EntitySchema, RelationId } = require("typeorm")
 
 module.exports = new EntitySchema({
     name: "Produto",
@@ -16,6 +16,16 @@ module.exports = new EntitySchema({
         QUANTIDADE: {
             type: "int",
             nullable: false
+        }
+    },
+    relations:{
+        Prova:{
+            type:"many-to-one",
+            target:"Prova",
+            joinColumn:{
+                name: "PRODUTO"
+            },
+            inverseSide:"Produto" // É O PROVA 
         }
     }
 })
