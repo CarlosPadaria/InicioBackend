@@ -9,11 +9,11 @@ module.exports = new EntitySchema({
             type: "int",
             generated: true
         },
-       /*IDPRODUTO: {
+        IDPRODUTO: {
             primary: true,
             type: "int"
             
-        },*/
+        },
         DATA_PROVA: {
             type: "date",
             nullable: false

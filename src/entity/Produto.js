@@ -18,14 +18,14 @@ module.exports = new EntitySchema({
             nullable: false
         }
     },
-    //relations:{
-        /*Prova:{
+    relations:{
+        Prova:{
             type:"many-to-one",
             target:"Prova",
             joinColumn:{
                 name: "PRODUTO"
             },
             inverseSide:"Produto" // É O PROVA 
-        }*/
-    //}
+        }
+    }
 })

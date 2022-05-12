@@ -29,12 +29,11 @@ app.get("/", (req, res) =>{
 })
 app.get("/produtos", async (req, res) =>{
     //req.body
-    //console.log(234)
     let productRepository = getRepository("Produto");
     
 
     const produto = await productRepository.find();
-    console.log(res)
+
     return res.status(200).json({produto})
 
 })
