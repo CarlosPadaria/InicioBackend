@@ -17,7 +17,7 @@ module.exports = new EntitySchema({
             type: "int",
             nullable: false
         }
-    },
+    }/*,
     relations:{
         Prova:{
             type:"many-to-one",
@@ -27,5 +27,5 @@ module.exports = new EntitySchema({
             },
             inverseSide:"Produto" // É O PROVA 
         }
-    }
+    }*/
 })
